@@ -1,9 +1,5 @@
-
-
-
 import { Container, Sprite, Texture } from "pixi.js";
 import { RoundedBox } from "../../ui/RoundedBox";
-
 
 export class MainScreen extends Container {
   public static assetBundles = ["main"];
@@ -114,8 +110,8 @@ export class MainScreen extends Container {
     const cup = this.cupSprites[idx];
     if (!cup) return;
     // Animate cup up
-    await new Promise(r => setTimeout(r, 200));
-    await new Promise<void>(resolve => {
+    await new Promise((r) => setTimeout(r, 200));
+    await new Promise<void>((resolve) => {
       const startY = cup.y;
       const endY = startY - 120;
       const start = performance.now();
@@ -130,7 +126,7 @@ export class MainScreen extends Container {
     // Show prize under this cup if win, or under winning cup if lose
     if (this.prizeSprite) {
       this.prizeSprite.x = cup.x;
-      this.prizeSprite.y = cup.y + (cup.height * cup.scale.y) * 0.45;
+      this.prizeSprite.y = cup.y + cup.height * cup.scale.y * 0.45;
       this.prizeSprite.visible = true;
     }
     if (!isWin) {
@@ -138,7 +134,7 @@ export class MainScreen extends Container {
       for (let i = 0; i < this.cupSprites.length; i++) {
         if (i !== idx) {
           const otherCup = this.cupSprites[i];
-          await new Promise<void>(resolve => {
+          await new Promise<void>((resolve) => {
             const startY = otherCup.y;
             const endY = startY - 120;
             const start = performance.now();
@@ -165,7 +161,7 @@ export class MainScreen extends Container {
     if (!middleCup) return;
     // Helper to animate a cup up/down
     const animateCup = (cup: Sprite, up = true, duration = 350) => {
-      return new Promise<void>(resolve => {
+      return new Promise<void>((resolve) => {
         const startY = cup.y;
         const endY = up ? startY - 120 : startY;
         const start = performance.now();
@@ -180,8 +176,9 @@ export class MainScreen extends Container {
     };
     // Helper to swap two cups
     const swapCups = (a: Sprite, b: Sprite, duration = 350) => {
-      return new Promise<void>(resolve => {
-        const startAX = a.x, startBX = b.x;
+      return new Promise<void>((resolve) => {
+        const startAX = a.x,
+          startBX = b.x;
         const start = performance.now();
         const step = (now: number) => {
           const t = Math.min(1, (now - start) / duration);
@@ -201,7 +198,7 @@ export class MainScreen extends Container {
     middleCup.y = originalY;
     // Hide the diamond (prize) before shuffling
     if (this.prizeSprite) this.prizeSprite.visible = false;
-    await new Promise(r => setTimeout(r, 200));
+    await new Promise((r) => setTimeout(r, 200));
     // Shuffle sequence
     await swapCups(cupSprites[0], cupSprites[1]); // swap 1
     await swapCups(cupSprites[1], cupSprites[2]); // swap 2
@@ -211,20 +208,23 @@ export class MainScreen extends Container {
     const revealCup = cupSprites[Math.floor(Math.random() * cupSprites.length)];
     if (this.prizeSprite && revealCup) {
       this.prizeSprite.x = revealCup.x;
-      this.prizeSprite.y = revealCup.y + (revealCup.height * revealCup.scale.y) * 0.45;
+      this.prizeSprite.y =
+        revealCup.y + revealCup.height * revealCup.scale.y * 0.45;
       this.prizeSprite.visible = true;
     }
     await animateCup(revealCup, true); // up (reveal diamond location)
-    await new Promise(r => setTimeout(r, 200));
+    await new Promise((r) => setTimeout(r, 200));
     await animateCup(revealCup, false); // down (hide diamond again)
     revealCup.y = originalY;
     if (this.prizeSprite) this.prizeSprite.visible = false;
-    await new Promise(r => setTimeout(r, 400)); // pause
+    await new Promise((r) => setTimeout(r, 400)); // pause
     // 6 swaps
     for (let i = 0; i < 6; i++) {
       const a = cupSprites[Math.floor(Math.random() * numCups)];
       let b;
-      do { b = cupSprites[Math.floor(Math.random() * numCups)]; } while (b === a);
+      do {
+        b = cupSprites[Math.floor(Math.random() * numCups)];
+      } while (b === a);
       await swapCups(a, b);
     }
     // 2 more swaps
@@ -279,7 +279,8 @@ export class MainScreen extends Container {
     const middleCup = cupSprites[middleIndex];
     if (middleCup && this.prizeSprite) {
       this.prizeSprite.x = middleCup.x;
-      this.prizeSprite.y = middleCup.y + (middleCup.height * middleCup.scale.y) * 0.45;
+      this.prizeSprite.y =
+        middleCup.y + middleCup.height * middleCup.scale.y * 0.45;
       this.prizeSprite.scale.set(0.7);
     }
   }
